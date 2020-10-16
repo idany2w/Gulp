@@ -73,9 +73,12 @@ function js() {
 
 function bs() {
 	browserSync.init({
-		server: { baseDir: "app/" },	//корневая директория сервера
-		notify: true,					//всплывающее уведомление Browser-Sync
-		online: true,					//свервер локально или по всей Wi-Fi сети?
+		server: {
+			baseDir: "app/",			//корневая директория сервера
+			index: "index.html",					//индексный файл
+		},
+		notify: true,								//всплывающее уведомление Browser-Sync
+		online: true,								//свервер локально или по всей Wi-Fi сети?
 	});
 }
 function build() {
@@ -91,7 +94,23 @@ function build() {
 		}
 	).pipe(dest("dist"));
 }
-function cleanDist() {
+function github_page() {
+	return src(
+		[
+			"app/css/**/*.min.css",
+			"app/js/**/*.min.js",
+			"app/img/dist/**/*",
+			"app/index.html",
+		],
+		{
+			base: "app",
+		}
+	).pipe(dest("docs"));
+}
+function clean_docs() {
+	return del("docs", { force: true });
+}
+function clean_dist() {
 	return del("dist/**/*", { force: true });
 }
 function startWatch() {
@@ -118,8 +137,8 @@ exports.scss_blocks = scss_blocks;
 
 exports.bs = bs;
 exports.build = build;
-exports.cleanDist = cleanDist;
+exports.clean_dist = clean_dist;
 
 exports.compile = series(scss_blocks, scss, css, img, js);
-exports.build = series(scss_blocks, scss, css, img, js, build);
-exports.default = parallel(cleanDist, scss_blocks, scss, css, img, js, bs, startWatch)
+exports.build = series(clean_docs,scss_blocks, scss, css, img, js, build, github_page);
+exports.default = parallel(clean_dist, scss_blocks, scss, css, img, js, bs, startWatch)
