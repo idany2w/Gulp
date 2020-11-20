@@ -40,7 +40,7 @@ function scss() {
 		.pipe(autoprefixer({overrideBrowserslist: [browsersList]}))
 		.pipe(rename("style.css"))
 		.pipe(dest("app/template/css/"))
-
+		.pipe(browserSync.stream())								    //синхронизация браузера
 		.pipe(gcmq())												//объединение media запросов CSS
         .pipe(
 			cleancss({
