@@ -1,0 +1,104 @@
+// Сетка с возможностью разбивки на разные колонки внутки каждого контейнера.
+
+// Миксин для медиа-запросов
+@mixin media($item) { 
+    @media screen and (min-width: #{map-get($breakpoints, $item)}px) {
+        @content;
+    }
+}
+
+// Дополнительная функция для сеток
+@function positions($key) {
+    @return map-get($custom_grids, $key);
+}
+
+
+// стили для классов .sgrid .{beakpoint}_sgrid
+@mixin for_sgrid_fixed {
+	-ms-flex-preferred-size:0;
+	flex-basis:0;
+	-webkit-box-flex:1;
+	-ms-flex-positive:1;
+	flex-grow:1;
+	max-width:100%
+}
+
+// скидываем .sgrid
+@mixin for_unset_fixed {
+	-ms-flex-preferred-size:unset;
+	flex-basis:unset;
+	-webkit-box-flex:unset;
+	-ms-flex-positive:unset;
+	flex-grow:unset;
+	max-width:unset
+}
+
+// стили для классов .sgrid_{index}
+@mixin for_sgrid_media($i) {
+	-webkit-box-flex:0;
+	-ms-flex:0 0 (100% / $grids) * $i;
+	flex:0 0 (100% / $grids) * $i;
+	max-width: (100% / $grids) * $i;
+}
+
+// стили для классов .order--{index} .{beakpoint}_sgrid_{index}
+@mixin for_orders($i) {
+	-webkit-box-ordinal-group:$i;
+	-ms-flex-order:$i;
+	order:$i
+}
+
+// СОБИРАЕМ СЕТКИ
+
+.sgrid{
+	@include for_sgrid_fixed;
+}
+
+.unset{
+	@include for_unset_fixed;
+}
+
+@for $i from 1 through $grids {
+	.sgrid_#{$i} {@include for_sgrid_media($i);}
+	.order--#{$i} {@include for_orders($i);}
+}
+
+@each $bp_key, $bp_value in $breakpoints {
+    // сетка для станадрных колонок
+    @media screen and (min-width: $bp_value+'px') {
+        .#{$bp_key}_sgrid{
+            @include for_sgrid_fixed;
+        }
+        .#{$bp_key}_unset{
+            @include for_unset_fixed;
+        }
+        @for $i from 1 through $grids {
+            .#{$bp_key}_sgrid_#{$i} {
+                @include for_sgrid_media($i);
+            };
+            .#{$bp_key}_order--#{$i} {
+                @include for_orders($i);
+            }
+        }  
+    }
+    // сетка для кастомных колонок
+    @if map-has-key($custom_grids, $bp_key) {
+        @media screen and (min-width: $bp_value+'px') {
+            @each $cs_grids in positions($bp_key) {
+                @for $i from 1 through $cs_grids {
+                    // .#{$bp_key}_#{$cs_grids} > .#{$bp_key}_sgrid_#{$i}  - предыдущий нейминг
+                    .#{$bp_key}_#{$cs_grids} > .#{$bp_key}_sgrid_#{$i} {
+                        -webkit-box-flex:0;
+                        -ms-flex:0 0 (100% / $cs_grids) * $i;
+                        flex:0 0 (100% / $cs_grids) * $i;
+                        max-width: (100% / $cs_grids) * $i;
+                    };
+                    // #{$bp_key}_order--#{$i}  - предыдущий нейминг
+                    .#{$bp_key}_#{$cs_grids} > .#{$bp_key}_order--#{$i} {
+                        @include for_orders($i);
+                    }
+                }
+            }
+        }
+    }
+}

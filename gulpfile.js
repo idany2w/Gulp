@@ -11,46 +11,36 @@ const del = require("del");										// удалятор файлов
 const gcmq = require("gulp-group-css-media-queries");			// объединение media запросов CSS
 const rename = require("gulp-rename");							// переименовать файлы
 
-const browsersList = "last 10 years";
+const browsersList = "last 3 versions";
 
 const scss_src = [
-    "app/scss/**/*.scss"
+	"app/template/css/settings/normalize.scss",
+	"app/template/css/settings/magnific.scss",
+	"app/template/css/settings/slick.scss",  
+	"app/template/css/settings/variables.scss",
+	"app/template/css/settings/grid.scss",
+	"app/template/css/settings/helpers.scss",
+	"app/template/css/style.scss",
+	"app/template/css/blocks/*.scss",
 ]
 const css_src = [
-    "app/css/**/*.css",
-    "app/blocks/**/*.css",
-    "!app/css/style.css",
-    "!app/css/style.min.css",
+    "app/template/css/scss.css"
 ]
 const js_src = [
-    "app/blocks/**/*.js",		
-    "app/js/**/*.js",		
-    "!app/js/script.js", 
-    "!app/js/script.min.js"
+    "app/template/js/**/*.js",		
+    "!app/template/js/script.js", 
+    "!app/template/js/script.min.js"
 ]
 
-function img() {
-	return src("app/img/src/**/*")
-		.pipe(newer("app/img/dist/"))
-		.pipe(imagemin())
-		.pipe(dest("app/img/dist/"));
-}
-function scss_blocks() {
-	return src("app/blocks/**/*.scss")                                            //получаем файлы
-		.pipe(sass({outputStyle: 'expanded'}))                      //компилируем sass/scss в css
-		.pipe(dest("app/blocks/"));									//выгрузка по указанному пути
-}
 function scss() {
-    return src(scss_src)
-		.pipe(sass({outputStyle: 'expanded'}))                      //компилируем sass/scss в css
-		.pipe(dest("app/css/"));									//выгрузка по указанному пути
-}
-function css(){
-	return src(css_src)                                             //получаем файлы
+	return src(scss_src)
+		.pipe(concat("style.scss"))
+		.pipe(sass({outputStyle: 'expanded'}))              		//компилируем sass/scss в css
+		//css
 		.pipe(autoprefixer({overrideBrowserslist: [browsersList]}))
-        .pipe(concat("style.css"))								    //объединение всех стилей в один
-		.pipe(dest("app/css/"))										//выгрузка по указанному пути
-		.pipe(browserSync.stream())
+		.pipe(rename("style.css"))
+		.pipe(dest("app/template/css/"))
+
 		.pipe(gcmq())												//объединение media запросов CSS
         .pipe(
 			cleancss({
@@ -58,87 +48,45 @@ function css(){
 			})
 		)
         .pipe(rename("style.min.css"))                              //выгружаем сжатый файл
-        .pipe(dest("app/css/"))										//выгрузка по указанному пути
+		.pipe(dest("app/template/css/"))							//выгрузка по указанному пути		
 		.pipe(browserSync.stream());								//синхронизация браузера
 }
 function js() {
     return src(js_src)                  //получаем файлы
 		.pipe(concat("script.js"))		//объедиение подключенных js файлов в один с указанным именем
-		.pipe(dest("app/js/"))          //выгружаем несжатый файл
+		.pipe(dest("app/template/js/"))          //выгружаем несжатый файл
 		.pipe(uglify())					//сжатие js файлов
 		.pipe(rename("script.min.js"))	//выгружаем сжатый файл
-		.pipe(dest("app/js/"))			//выгрузка по указанному пути
+		.pipe(dest("app/template/js/"))			//выгрузка по указанному пути
 		.pipe(browserSync.stream());	//синхронизация браузера
 }
 
 function bs() {
 	browserSync.init({
 		server: {
-			baseDir: "app/",			//корневая директория сервера
+			baseDir: "app/",						//корневая директория сервера
 			index: "index.html",					//индексный файл
 		},
 		notify: true,								//всплывающее уведомление Browser-Sync
 		online: true,								//свервер локально или по всей Wi-Fi сети?
 	});
 }
-function build() {
-	return src(
-		[
-			"app/css/**/*.min.css",
-			"app/js/**/*.min.js",
-			"app/img/dist/**/*",
-			"app/index.html",
-		],
-		{
-			base: "app",
-		}
-	).pipe(dest("dist"));
-}
-function github_page() {
-	return src(
-		[
-			"app/css/**/*.min.css",
-			"app/js/**/*.min.js",
-			"app/img/dist/**/*",
-			"app/index.html",
-		],
-		{
-			base: "app",
-		}
-	).pipe(dest("docs"));
-}
-function clean_docs() {
-	return del("docs", { force: true });
-}
-function clean_dist() {
-	return del("dist/**/*", { force: true });
-}
+
 function startWatch() {
     //вочим стили
     watch(scss_src, scss);
-    watch("app/blocks/**/*.scss", scss_blocks);
-    watch(css_src, css);
 
     //вочим скрипты
-    watch(js_src, js);
-
-    //вочим картинки
-	watch("app/img/src/**/*", img);							
+    watch(js_src, js);		
 
     //вочим html	
-	watch("app/**/*.html").on("change", browserSync.reload);	
+	watch("app/*.html").on("change", browserSync.reload);	
 }
 
 exports.js = js;
-exports.img = img;
-exports.css = css;
 exports.scss = scss;
-exports.scss_blocks = scss_blocks;
 
 exports.bs = bs;
-exports.build = build;
-exports.clean_dist = clean_dist;
 
-exports.compile = series(scss_blocks, scss, css, img, js);
-exports.build = series(clean_docs,scss_blocks, scss, css, img, js, build, github_page);
-exports.default = parallel(clean_dist, scss_blocks, scss, css, img, js, bs, startWatch)
+exports.compile = series(scss, js);
+exports.default = parallel(series(scss, js), bs, startWatch)
