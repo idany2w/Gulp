@@ -1,0 +1,210 @@
+%ul{
+    margin: 15px 0;
+    padding-left: 20px;
+
+    @include media(lg){
+        padding-left: 25px;
+    }
+
+    li{
+        position: relative;
+        padding-left: 24px;
+
+        &::before{
+            content: '';
+            display: block;
+            width: 7px;
+            height: 7px;
+            border-radius: 7px;
+            position: absolute;
+            left: 0px;
+            top: 7px;
+            background: $color_3;
+        }
+    }
+}
+
+%ol{
+    margin: 15px 0;
+    padding: 0;
+    padding-left: 20px;
+    
+    font-family: $font_1;
+    font-style: normal;
+    font-weight: 300;
+    font-size: rem(16);
+    line-height: rem(22);
+
+    @include media(lg){
+        padding-left: 25px;
+    }
+    counter-reset: myCounter;
+    
+    li{
+        list-style: none;
+        color: $color_7;
+
+        &::before{
+            counter-increment: myCounter;
+            content: counters(myCounter,".") ".";
+            display: inline-block;
+            color: $color_3;
+            margin-right: 11px;
+            line-height: inherit;
+            width: auto;
+            font-weight: bold;
+            text-align: right;
+            min-width: 24px;
+            margin-left: -14px;
+        }
+
+        li:before{
+            margin-left: 0;
+        }
+    }
+}
+
+.ul{
+    @extend %ul;
+}
+.ol{
+    @extend %ol;
+}
+
+.content{
+    font-family: $font_1;
+    color: lighten($color_7, 20%);
+    font-weight: 300;
+    line-height: 1.4;
+    font-size: 14px;
+    padding-bottom: 20px;
+
+    @include media(lg){
+        font-size: 16px;
+        padding-bottom: 40px;
+    }
+
+    & > *:first-child{margin-top: 0;}
+    & > *:last-child{margin-bottom: 0;}
+
+    h1, .h1,
+    h2, .h2,
+    h3, .h3,
+    h4, .h4,
+    h5, .h5,
+    h6, .h6{
+        font-family: $font_2;
+        font-weight: 700;
+        color: $color_3;
+        line-height: 1.2;
+        margin: 25px 0 15px;
+    }
+
+    h1, .h1{
+        font-size: 30px;
+        @include media(lg){
+            font-size: 46px;
+        }
+    }
+    h2, .h2{
+        font-size: 27px;
+        @include media(lg){
+            font-size: 40px;
+        }
+    }
+    h3, .h3{
+        font-size: 24px;
+        @include media(lg){
+            font-size: 36px;
+        }
+    }
+    h4, .h4{
+        font-size: 21px;
+        @include media(lg){
+            font-size: 30px;
+        }
+    }
+    h5, .h5{
+        font-size: 18px;
+        @include media(lg){
+            font-size: 24px;
+        }
+    }
+    h6, .h6{
+        font-size: 14px;
+        @include media(lg){
+            font-size: 16px;
+        }
+    }
+
+    //ссылки
+    a{
+        color: $color_3;
+        text-decoration: underline;
+    }
+
+    //параграф
+    p{
+        margin: 15px 0;
+    }
+
+    // ненумерованный список
+    ul{
+        @extend %ul;
+    }
+
+    // нумерованный список
+    ol{
+        @extend %ol;
+    }
+
+    //bold (жирный)
+    strong, b{
+        font-weight: 700;
+    }
+    
+    //italic (курсив)
+    em, i{font-style: italic;}
+
+    q{}
+
+    // перечеркнутый
+    s{text-decoration: line-through;}
+
+    // подчеркнутый
+    u{text-decoration: underline;}
+
+    // текст внизу
+    sub{}
+    // текст вверху
+    sup{}
+    // small(текст меньше)
+    small{}
+    // small(текст больше)
+    big{}
+
+    // таблица
+    table{
+        border-collapse: collapse;
+        width: 100%;
+        margin: 15px 0;
+        tr{}
+        td{
+            padding: 10px;
+            border: $color_3 1px solid;
+        }
+
+        thead{
+            tr{}
+            td{
+                font-weight: bold;
+                text-align: center;
+            }
+        }
+
+        tbody{
+            td{}
+            tr{}
+        }
+    }
+}

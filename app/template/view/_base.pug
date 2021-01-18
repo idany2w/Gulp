@@ -1,0 +1,61 @@
+block variables
+    - var selected //- для активного пункта
+
+include ../blocks/_base/data/mixins.pug
+include ../blocks/_base/data/infos.pug
+include ../blocks/header/header.pug
+include ../blocks/footer/footer.pug
+
+doctype html
+html(lang="ru")
+    head
+        block head
+            meta(charset='UTF-8')
+            meta(http-equiv='X-UA-Compatible' content='IE=edge')
+            meta(name='viewport' content='width=device-width')
+            meta(name="format-detection" content="telephone=no")
+
+            link(rel="preconnect" href="https://fonts.gstatic.com")
+            link(href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet")
+
+            link(rel='stylesheet' type='text/css' href='template/css/style.css')
+            
+            link( rel="apple-touch-icon" sizes="57x57" href="template/images/favicon/apple-icon-57x57.png")
+            link( rel="apple-touch-icon" sizes="60x60" href="template/images/favicon/apple-icon-60x60.png")
+            link( rel="apple-touch-icon" sizes="72x72" href="template/images/favicon/apple-icon-72x72.png")
+            link( rel="apple-touch-icon" sizes="76x76" href="template/images/favicon/apple-icon-76x76.png")
+            link( rel="apple-touch-icon" sizes="114x114" href="template/images/favicon/apple-icon-114x114.png")
+            link( rel="apple-touch-icon" sizes="120x120" href="template/images/favicon/apple-icon-120x120.png")
+            link( rel="apple-touch-icon" sizes="144x144" href="template/images/favicon/apple-icon-144x144.png")
+            link( rel="apple-touch-icon" sizes="152x152" href="template/images/favicon/apple-icon-152x152.png")
+            link( rel="apple-touch-icon" sizes="180x180" href="template/images/favicon/apple-icon-180x180.png")
+            link( rel="icon" type="image/png" sizes="192x192"  href="template/images/favicon/android-icon-192x192.png")
+            link( rel="icon" type="image/png" sizes="32x32" href="template/images/favicon/favicon-32x32.png")
+            link( rel="icon" type="image/png" sizes="96x96" href="template/images/favicon/favicon-96x96.png")
+            link( rel="icon" type="image/png" sizes="16x16" href="template/images/favicon/favicon-16x16.png")
+            link( rel="manifest" href="template/images/favicon/manifest.json")
+            meta( name="msapplication-TileColor" content="#ffffff")
+            meta( name="msapplication-TileImage" content="template/images/favicon/ms-icon-144x144.png")
+            meta( name="theme-color" content="#ffffff")
+            
+            title #{selected} | Сайты
+    
+    body
+        +header()
+        
+        block content
+        
+        +footer()
+
+        .hidden
+            include ../blocks/_base/data/svg.pug
+
+        script(src="template/js/includes/jquery.min.js")
+        script(src="template/js/includes/jquery.magnific-popup.min.js")
+        script(src="template/js/includes/sticky.min.js")
+        script(src="template/js/includes/OverlayScrollbars.min.js")
+        script(src="template/js/includes/slick.min.js")
+        script(src="template/js/includes/jquery.inputmask.min.js")
+        script(src="template/js/includes/use_webp.js")
+        script(src="template/js/includes/masonry.pkgd.min.js")
+        script(src="template/js/script.js")

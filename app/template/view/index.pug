@@ -1,0 +1,9 @@
+extends ./_base.pug
+
+include ../blocks/hero/hero.pug
+
+block variables
+    - var selected = 'Главная';
+
+block content
+    +hero()

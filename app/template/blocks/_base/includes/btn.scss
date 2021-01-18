@@ -1,0 +1,9 @@
+.btn{
+    cursor: pointer;
+    outline: none;
+    
+    &:hover{}
+
+    @include media(md){
+    }
+}
